@@ -6,20 +6,39 @@ defmodule Pencil do
   end
 
   def write(pencil, paper, string) do
-    durability = get_and_update_durability(pencil, String.length(string))
-    output = slice_string(string, durability)
-          |> String.pad_trailing(String.length(string))
-
+    {new_durability, output} = determine_output_and_durability(string, current_durability(pencil))
+    update_durability(pencil, new_durability)
     Paper.write(paper, output)
   end
 
-  defp get_and_update_durability(pencil, amount_to_use) do
-    Agent.get_and_update(pencil, fn durability -> {durability, max(0, durability - amount_to_use)} end)
+  defp current_durability(pencil), do: Agent.get(pencil, &(&1))
+
+  defp update_durability(pencil, new_durability), do: Agent.update(pencil, fn _state -> new_durability end)
+
+  defp determine_output_and_durability(string, current_durability) do
+    String.codepoints(string)
+      |> Enum.reduce({current_durability, ""}, fn (next, {durability, buffer}) ->
+            case {is_whitespace?(next), durability >= durability_loss(next)}  do
+              {true, _}  -> {durability, buffer <> next}
+              {_, false} -> {durability, buffer <> " "}
+              {_, _}  -> {durability - durability_loss(next), buffer <> next}
+            end
+         end)
   end
 
-  defp slice_string(_string, length) when length <= 0, do: ""
-  defp slice_string(string, length) do
-    String.slice(string, 0..(length-1))
+  defp durability_loss(character) do
+    case is_upcase?(character) do
+      true -> 2
+      false -> 1
+    end
+  end
+
+  defp is_whitespace?(character) do
+    Regex.match?(~r/^\s$/, character)
+  end
+
+  defp is_upcase?(character) do
+    String.upcase(character) == character
   end
 
 end
