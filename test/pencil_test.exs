@@ -62,4 +62,26 @@ defmodule PencilTest do
       ]
   end
 
+  test "pencils can be sharpened to restore the initial point durability", ctx do
+    pencil = Pencil.new(4)
+
+    Pencil.write(pencil, ctx[:sheet], "football")
+    Pencil.sharpen(pencil)
+    Pencil.write(pencil, ctx[:sheet], "football")
+
+    assert "foot    foot    " == Paper.read(ctx[:sheet])
+  end
+
+  test "pencils can only be sharpened until there length runs out", ctx do
+    pencil = Pencil.new(4, 2)
+
+    for _ <- 1..3 do
+      Pencil.write(pencil, ctx[:sheet], "brick")
+      Pencil.sharpen(pencil)
+    end
+    Pencil.write(pencil, ctx[:sheet], "brick")
+
+    assert "bric bric bric      " == Paper.read(ctx[:sheet])
+  end
+
 end

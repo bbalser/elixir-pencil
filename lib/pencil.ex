@@ -1,19 +1,27 @@
 defmodule Pencil do
 
-  def new(durability) do
-    {:ok, pid} = Agent.start_link(fn -> durability end)
+  def new(durability, length \\ 1) do
+    {:ok, pid} = Agent.start_link(fn -> %{initial_durability: durability, durability: durability, length: length} end)
     pid
   end
 
   def write(pencil, paper, string) do
-    {new_durability, output} = determine_output_and_durability(string, current_durability(pencil))
-    update_durability(pencil, new_durability)
+    output = Agent.get_and_update pencil, fn state ->
+      {new_durability, output} = determine_output_and_durability(string, state[:durability])
+      {output, %{state | durability: new_durability} }
+    end
+
     Paper.write(paper, output)
   end
 
-  defp current_durability(pencil), do: Agent.get(pencil, &(&1))
-
-  defp update_durability(pencil, new_durability), do: Agent.update(pencil, fn _state -> new_durability end)
+  def sharpen(pencil) do
+    Agent.update pencil, fn state ->
+      case state[:length] > 0 do
+        true -> %{state | durability: state[:initial_durability], length: state[:length] - 1}
+        false -> state
+      end
+    end
+  end
 
   defp determine_output_and_durability(string, durability) do
     process_durability_and_buffer(String.codepoints(string), {durability, ""})
