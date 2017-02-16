@@ -1,5 +1,5 @@
 defmodule Eraser do
-  import StringUtil
+  import StringUtil, only: [is_whitespace?: 1]
 
   def new(durability \\ 5) do
     {:ok, pid} = Agent.start_link(fn -> durability end)
@@ -9,12 +9,12 @@ defmodule Eraser do
   def erase(pid, sheet, string) do
     text = Paper.read(sheet)
     text
-      |> :binary.matches(string)
-      |> List.last
-      |> to_list_of_indexes
-      |> remove_whitespaces(text)
-      |> Enum.reverse
-      |> erase_indexes(pid, sheet)
+    |> :binary.matches(string)
+    |> List.last
+    |> to_list_of_indexes
+    |> remove_whitespaces(text)
+    |> Enum.reverse
+    |> erase_indexes(pid, sheet)
   end
 
   defp remove_whitespaces(indexes, original_string) do
@@ -28,7 +28,7 @@ defmodule Eraser do
   defp erase_indexes(indexes, pid, sheet) do
     Agent.update pid, fn durability ->
       Enum.take(indexes, durability)
-        |> Enum.each(fn index -> Paper.erase(sheet, index) end)
+      |> Enum.each(fn index -> Paper.erase(sheet, index) end)
 
       durability - Enum.count(indexes)
     end

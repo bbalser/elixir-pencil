@@ -26,4 +26,15 @@ defmodule StringUtilTests do
       ]
     end
 
+  test_with_params "replace_at replaces the chracter at position int he string with the replacement ",
+    fn (input, position, replacement, output) ->
+      assert output == StringUtil.replace_at(input, position, replacement)
+    end do
+      [
+        {"Hello", 1, "a", "Hallo"},
+        {"Jerks", 4, ">", "Jerk>"},
+        {"Baby", 0, "b", "baby"}
+      ]
+    end
+
 end

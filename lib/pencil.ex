@@ -1,5 +1,5 @@
 defmodule Pencil do
-  import StringUtil
+  import StringUtil, only: [is_whitespace?: 1, is_upcase?: 1]
 
   def new(durability, length \\ 1) do
     {:ok, pid} = Agent.start_link(fn -> %{initial_durability: durability, durability: durability, length: length} end)

@@ -15,9 +15,7 @@ defmodule Paper do
 
   def erase(sheet, index) do
     Agent.update sheet, fn state ->
-      String.codepoints(state)
-        |> List.replace_at(index, " ")
-        |> to_string
+      StringUtil.replace_at(state, index, " ")
     end
   end
 

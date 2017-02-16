@@ -1,19 +1,13 @@
 # Pencil
 
-**TODO: Add description**
+Kata definition : https://github.com/mcsearchin/PencilKata-Groovy
 
-## Installation
+## Running Tests
+If you have elixir installed, then simply run ```mix test ``` in the checked out project.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `pencil` to your list of dependencies in `mix.exs`:
 
-```elixir
-def deps do
-  [{:pencil, "~> 0.1.0"}]
-end
+If you have docker installed, then run the following command in the checked out project.
+
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/pencil](https://hexdocs.pm/pencil).
-
+  docker run -it --rm -h elixir.local -v "$PWD":/usr/src/myapp -w /usr/src/myapp elixir bash -c "mix local.hex --force; mix test"
+```
