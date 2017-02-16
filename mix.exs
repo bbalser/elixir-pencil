@@ -29,7 +29,8 @@ defmodule Pencil.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:ex_parameterized, "~> 1.2.0"}
+      {:ex_parameterized, "~> 1.2.0"},
+      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false}
     ]
   end
 end

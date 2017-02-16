@@ -1,4 +1,5 @@
 defmodule Pencil do
+  import StringUtil
 
   def new(durability, length \\ 1) do
     {:ok, pid} = Agent.start_link(fn -> %{initial_durability: durability, durability: durability, length: length} end)
@@ -42,14 +43,6 @@ defmodule Pencil do
       is_upcase?(character) -> 2
       true -> 1
     end
-  end
-
-  defp is_whitespace?(character) do
-    Regex.match?(~r/^\s$/, character)
-  end
-
-  defp is_upcase?(character) do
-    String.upcase(character) == character
   end
 
 end
