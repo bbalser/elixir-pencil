@@ -7,12 +7,11 @@ defmodule Pencil do
   end
 
   def write(pencil, paper, string) do
-    output = Agent.get_and_update pencil, fn state ->
+    Agent.update pencil, fn state ->
       {new_durability, output} = determine_output_and_durability(string, state[:durability])
-      {output, %{state | durability: new_durability} }
+      Paper.write(paper, output)
+      %{state | durability: new_durability}
     end
-
-    Paper.write(paper, output)
   end
 
   def sharpen(pencil) do
